@@ -1,70 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import CsvDownloader from 'react-csv-downloader';
+import {headers, csvFormater, csvName} from './csvFileData';
 
 const Graph = props => {
-  console.log('keys in graph', props.keys)
-  console.log('data in graph', props.data)
-
   const [csvHeaders, setCsvHeaders] = useState([]);
+  const [csvFilename, setCsvFilename] = useState('');
   const [csvFormattedData, setCsvFormattedData] = useState([]);
-  // console.log('Index in Graph', props.index);
-  // console.log('CsvData in Graph', props.csvData);
-  // console.log('Keys in Graph', props.keys);
 
   useEffect(() => {
-    if (props.filteredData && props.checkboxOptions !== props.filtgiteredData) {
+    if (props.filteredData && props.checkboxOptions !== props.filteredData) {
       props.setCheckboxOptions(props.filteredData);
     }
   }, []);
 
-  //Gets headers for CSV. 
-  let headers = (data) => {
-    let allHeaders = [];
-    //no crossfilter
-    if (!props.crossFilter) {
-      allHeaders = [props.index];
-      allHeaders.push({ id: `${props.sampleSize}`, displayName: `Sample Size: ${props.sampleSize}` })
-    } else {
-      allHeaders = [
-        { id: `${props.index}`, displayName: `${props.index}` },
-        ...props.keys,
-        { id: `${props.additionalFilter}` },
-        { id: `${props.sampleSize}`, displayName: `Sample Size: ${props.sampleSize}` }
-      ]
-    }
-    return allHeaders;
-  }
+  // //This func creates an array of headers(column titles/labels) for CSV download by extracting keys from data. Pass in CsvData when calling this func as it contains all data before being sliced or numbers changed to percentages.
+  // let headers = (data) => {
+  //   let allHeaders = [];
+  //   if (!props.crossFilter) {
+  //     allHeaders = [props.index];
+  //     allHeaders.push({ id: `${props.sampleSize}`, displayName: `Sample Size: ${props.sampleSize}` })
+  //   } else {
+  //   //crossfilter is "...props.keys". addFilter is added, too, to clarify that filters were implemented to data.
+  //     allHeaders = [
+  //       { id: `${props.index}`, displayName: `${props.index}` },
+  //       ...props.keys,
+  //       { id: `${props.additionalFilter}` },
+  //       { id: `${props.sampleSize}`, displayName: `Sample Size: ${props.sampleSize}` }
+  //     ]
+  //   }
+  //   return allHeaders;
+  // }
 
-  let csvFormater = (data) => {
-    //if there's additionalFilter 
-    if (props.additionalFilter) {
-      data = data.map(obj => {
-        let key = Object.keys(props.selectedCheckbox)[0];
-        let val = Object.values(props.selectedCheckbox)[0];
-        let o = Object.assign({}, obj);
-        o[key] = val;
-        return o;
-      })
-    }
-    return data.map(obj=> {return Object.values(obj)}) 
-  }
+  // // This func reassigns values so they're all in one column instead of cascading.
+  // // Ex. Male: 10, Female : 11... "10" and "11" are one column because they eblong to genders, not diff columns for each gender.
+  // let csvFormater = (data) => {
+  //   if (props.additionalFilter) {
+  //     data = data.map(obj => {
+  //       let key = Object.keys(props.selectedCheckbox)[0];
+  //       let val = Object.values(props.selectedCheckbox)[0];
+  //       let o = Object.assign({}, obj);
+  //       o[key] = val;
+  //       return o;
+  //     })
+  //   }
+  //   return data.map(obj=> {return Object.values(obj)}) 
+  // }
 
+  // //This creates filename assigned to csv file based on data and its filters.
   let fileName = '';
   fileName = `${props.index && props.index}${props.crossFilter && ('_by_' + props.crossFilter)}${props.additionalFilter && `_where_${props.additionalFilter}:(${Object.values(props.selectedCheckbox)[0]})`}`
 
   useEffect(() => {
     setCsvFormattedData(csvFormater(props.csvData))
-    setCsvHeaders(headers(props.csvData))
+    setCsvHeaders(headers(props))
+    setCsvFilename(csvName(props))
   }, [props.csvData])
-  console.log("formater", csvFormattedData)
+  // console.log('csvdata', headers(props))
+
   return (
     <div className="Graph-Container">
       <div className='dwnld-btn'>
         <CsvDownloader
           datas={csvFormattedData}
           columns={csvHeaders}
-          filename={fileName}
+          filename={csvFilename}
           suffix={`${new Date().toISOString()}`}
         ><button>Download⯆</button></CsvDownloader>
       </div>
