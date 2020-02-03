@@ -14,15 +14,12 @@ const Graph = props => {
     }
   }, []);
 
-  // //This creates filename assigned to csv file based on data and its filters.
-  let fileName = '';
-  fileName = `${props.index && props.index}${props.crossFilter && ('_by_' + props.crossFilter)}${props.additionalFilter && `_where_${props.additionalFilter}:(${Object.values(props.selectedCheckbox)[0]})`}`
-
   useEffect(() => {
     setCsvFormattedData(csvFormater(props.csvData))
     setCsvHeaders(headers(props))
     setCsvFilename(csvName(props))
   }, [props.csvData])
+  console.log('filename', csvFilename)
 
   return (
     <div className="Graph-Container">
