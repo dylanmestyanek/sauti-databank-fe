@@ -26,9 +26,9 @@ const Graph = props => {
       <div className='dwnld-btn'>
         <CsvDownloader
           datas={csvFormattedData}
-          columns={csvHeaders}
+          columns={csvHeaders}//required: the headers(keys from data) determines the columns. WIthout them, the values aren't inserted.
           filename={csvFilename}
-          suffix={`${new Date().toISOString()}`}
+          suffix={`${new Date().toISOString()}`}//adds to the filename
         ><button>Download⯆</button></CsvDownloader>
       </div>
       <ResponsiveBar
