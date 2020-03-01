@@ -382,6 +382,7 @@ const GetData = props => {
   }
   // data = [...data.tradersUsers, ...data.tradersData] // This is for when we are supporting multiple queries of same type
 
+  console.log("DATA", data)
   let filteredData;
   // This is how we nab checkbox options.
   if (props.additionalFilter.type && !graphLabels[`${props.additionalFilter.type}`]) {

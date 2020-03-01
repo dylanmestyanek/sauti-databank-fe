@@ -11,7 +11,7 @@ import { ApolloProvider } from "react-apollo";
 
 
 const client = new ApolloClient({
-  uri: `${process.env.REACT_APP_BACKEND_URL}`
+  uri: `https://sauti-back-end.herokuapp.com/graphql`
 });
 
 ReactDOM.render(
